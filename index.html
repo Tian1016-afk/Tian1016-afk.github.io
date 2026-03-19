@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -190,7 +189,8 @@
     <script>
         // 全局变量
         let storageKey = null;
-        let apiBase = 'https://api.jsonstorage.net/v1/json';
+        // 国内可访问的存储服务
+        let apiBase = 'https://json.minicg.com/api';
         let appData = {
             photos: [],
             memo: '',
@@ -239,9 +239,9 @@
                 const result = await response.json();
                 // 解析uri，得到key
                 const uri = result.uri;
-                // uri格式: https://api.jsonstorage.net/v1/json/userId/itemId
-                const parts = uri.replace(apiBase + '/', '').split('/');
-                storageKey = parts.join('/');
+                // uri格式: https://json.minicg.com/api/xxx
+                const key = uri.replace(apiBase + '/', '');
+                storageKey = key;
 
                 // 更新URL，添加key参数
                 window.history.replaceState({}, '', `${window.location.pathname}?key=${storageKey}`);
@@ -564,3 +564,6 @@
                 toast.classList.add('hidden');
             }, 2500);
         }
+    </script>
+</body>
+</html>
