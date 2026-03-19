@@ -189,8 +189,8 @@
     <script>
         // 全局变量
         let storageKey = null;
-        // 国内可访问的存储服务
-        let apiBase = 'https://json.minicg.com/api';
+        // 稳定的跨域存储服务，国内可正常访问
+        let apiBase = 'https://jsonblob.com/api/jsonBlob';
         let appData = {
             photos: [],
             memo: '',
@@ -236,11 +236,8 @@
                     body: JSON.stringify(appData)
                 });
 
-                const result = await response.json();
-                // 解析uri，得到key
-                const uri = result.uri;
-                // uri格式: https://json.minicg.com/api/xxx
-                const key = uri.replace(apiBase + '/', '');
+                // jsonblob返回的uri就是存储的id
+                const key = response.headers.get('X-JsonBlob-Id');
                 storageKey = key;
 
                 // 更新URL，添加key参数
@@ -396,12 +393,12 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // 压缩质量，确保base64大小小于32KB
+                        // 压缩质量，确保base64大小小于250KB，适配存储大小
                         let quality = 0.7;
                         let result = canvas.toDataURL('image/jpeg', quality);
                         
                         // 如果还是太大，继续降低质量
-                        while (result.length > 32000 && quality > 0.1) {
+                        while (result.length > 250000 && quality > 0.1) {
                             quality -= 0.1;
                             result = canvas.toDataURL('image/jpeg', quality);
                         }
